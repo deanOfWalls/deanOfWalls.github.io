@@ -2684,6 +2684,7 @@ ul.feature-icons li:nth-child(2) img {
 
 /* Header */
 
+/* style.css */
 	#header {
 		display: -moz-flex;
 		display: -webkit-flex;
@@ -2832,6 +2833,8 @@ ul.feature-icons li:nth-child(2) img {
 		#main > section:first-child {
 			border-top: 0;
 		}
+
+		
 
 /* Footer */
 
