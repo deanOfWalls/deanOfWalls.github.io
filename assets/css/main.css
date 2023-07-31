@@ -2725,7 +2725,7 @@ ul.feature-icons li:nth-child(2) img {
 		}
 
 			#header a:hover {
-				color: #ffffff !important;
+				color: #00d5ff !important;
 			}
 
 		#header > header {
@@ -2769,7 +2769,7 @@ ul.feature-icons li:nth-child(2) img {
 			}
 
 				#header > footer .icons li a {
-					color: #c4bbbb;
+					color: #ffffff;
 				}
 
 		#header > nav {
