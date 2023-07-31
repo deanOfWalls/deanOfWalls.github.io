@@ -2373,63 +2373,42 @@ input, select, textarea {
 /* Feature Icons */
 
 ul.feature-icons {
-	list-style: none;
-	padding-left: 0;
-	display: flex;
-	flex-wrap: wrap;
-  }
-  
-  ul.feature-icons li {
-	text-decoration: none;
-	display: inline-block;
-	margin: 0 0 1.6875em 0;
-	padding: 0 0 0 3.5em; /* Removed the top padding to align the icons from the bottom edge */
-	position: relative;
-	vertical-align: bottom; /* Adjusted to align the icons from the bottom edge */
-	width: 48%;
-  }
-  
-  /* Define the style for the icon images */
-  ul.feature-icons li img {
-	display: block;
-	height: 2.5em;
-	position: absolute;
-	left: 0;
-	bottom: 0; /* Align the images to the bottom edge of each list item */
-  }
-  
-  /* Adjust the positioning of the icon images in each list item */
-  ul.feature-icons li:nth-child(1) img {
-	content: url('/images/java.png');
-  }
-  
-  ul.feature-icons li:nth-child(2) img {
-	content: url('/images/spring.png');
-  }
-  
-  ul.feature-icons li:nth-child(3) img {
-	content: url('/images/react.png');
-  }
-  
-  ul.feature-icons li:nth-child(4) img {
-	content: url('/images/javascript.png');
-  }
-  
-  ul.feature-icons li:nth-child(5) img {
-	content: url('/images/html.png');
-  }
-  
-  ul.feature-icons li:nth-child(6) img {
-	content: url('/images/css.png');
-  }
-  
-  ul.feature-icons li:nth-child(7) img {
-	content: url('/images/docker.png');
-  }
-  
-  ul.feature-icons li:nth-child(8) img {
-	content: url('/images/sql.png');
-  }
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+ul.feature-icons li {
+  text-decoration: none;
+  display: inline-block;
+  margin: 0 0 1.6875em 0;
+  padding: 0 0 0 3.5em;
+  position: relative;
+  vertical-align: bottom;
+  width: 45%; /* Adjusted the width to maintain two-column layout */
+}
+
+/* Define the style for the icon images */
+ul.feature-icons li img {
+  display: block;
+  height: 2.5em;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+/* Adjust the positioning of the icon images in each list item */
+ul.feature-icons li:nth-child(1) img {
+  content: url('/images/java.png');
+}
+
+ul.feature-icons li:nth-child(2) img {
+  content: url('/images/spring.png');
+}
+
+/* Add the remaining icon styles as needed */
+
   
   
 
