@@ -2370,50 +2370,68 @@ input, select, textarea {
 						}
 
 		}
-
 /* Feature Icons */
 
-	ul.feature-icons {
-		list-style: none;
-		padding-left: 0;
-	}
-
-		ul.feature-icons li {
-			text-decoration: none;
-			display: inline-block;
-			margin: 0 0 1.6875em 0;
-			padding: 0.35em 0 0 3.5em;
-			position: relative;
-			vertical-align: top;
-			width: 48%;
-		}
-
-			ul.feature-icons li:before {
-				-moz-osx-font-smoothing: grayscale;
-				-webkit-font-smoothing: antialiased;
-				display: inline-block;
-				font-style: normal;
-				font-variant: normal;
-				text-rendering: auto;
-				line-height: 1;
-				text-transform: none !important;
-				font-family: 'Font Awesome 5 Free';
-				font-weight: 400;
-			}
-
-			ul.feature-icons li:before {
-				background: #4682B4;
-				border-radius: 100%;
-				color: #ffffff;
-				display: block;
-				height: 2.5em;
-				left: 0;
-				line-height: 2.5em;
-				position: absolute;
-				text-align: center;
-				top: 0;
-				width: 2.5em;
-			}
+ul.feature-icons {
+	list-style: none;
+	padding-left: 0;
+	display: flex;
+	flex-wrap: wrap;
+  }
+  
+  ul.feature-icons li {
+	text-decoration: none;
+	display: inline-block;
+	margin: 0 0 1.6875em 0;
+	padding: 0 0 0 3.5em; /* Removed the top padding to align the icons from the bottom edge */
+	position: relative;
+	vertical-align: bottom; /* Adjusted to align the icons from the bottom edge */
+	width: 48%;
+  }
+  
+  /* Define the style for the icon images */
+  ul.feature-icons li img {
+	display: block;
+	height: 2.5em;
+	position: absolute;
+	left: 0;
+	bottom: 0; /* Align the images to the bottom edge of each list item */
+  }
+  
+  /* Adjust the positioning of the icon images in each list item */
+  ul.feature-icons li:nth-child(1) img {
+	content: url('/images/java.png');
+  }
+  
+  ul.feature-icons li:nth-child(2) img {
+	content: url('/images/spring.png');
+  }
+  
+  ul.feature-icons li:nth-child(3) img {
+	content: url('/images/react.png');
+  }
+  
+  ul.feature-icons li:nth-child(4) img {
+	content: url('/images/javascript.png');
+  }
+  
+  ul.feature-icons li:nth-child(5) img {
+	content: url('/images/html.png');
+  }
+  
+  ul.feature-icons li:nth-child(6) img {
+	content: url('/images/css.png');
+  }
+  
+  ul.feature-icons li:nth-child(7) img {
+	content: url('/images/docker.png');
+  }
+  
+  ul.feature-icons li:nth-child(8) img {
+	content: url('/images/sql.png');
+  }
+  
+  
 
 /* Icons */
 
