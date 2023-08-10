@@ -2015,6 +2015,7 @@ input, select, textarea {
 		text-decoration: none;
 		border-bottom: none;
 		position: relative;
+		font-size: 150%;
 	}
 
 		.icon:before {
@@ -3113,7 +3114,7 @@ ul.feature-icons li:nth-child(2) img {
 		/* Basic */
 
 			body, input, select, textarea {
-				font-size: 12pt;
+				font-size: 18pt;
 			}
 
 			h1 br, h2 br, h3 br, h4 br, h5 br, h6 br {
