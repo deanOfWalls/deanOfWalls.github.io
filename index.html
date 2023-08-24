@@ -97,7 +97,10 @@
 					</header>
 					<p>As a <b>Passionate Full-Stack Java Developer</b>, I thrive on transforming innovative ideas into
 						powerful software solutions. With a keen eye for detail and a love for coding, I am committed to
-						delivering high-quality applications that make a difference. <b><a href = "http://resume.deanwalls.com">Check out my full resume here.</a></b></p>
+						delivering high-quality applications that make a difference. <b><a
+								href="http://resume.deanwalls.com" target="_blank">Check out my full resume
+								here.</a></b>
+
 				</div>
 			</section>
 
@@ -204,6 +207,15 @@
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
 
+
+
+
+		<div id="copyEmailImg">Click me to copy email</div>
+		<div id="notificationBubble"
+			style="display: none; border: 1px solid black; padding: 5px; position: absolute; background-color: #fff;">
+			Email address copied!</div>
+
+
 		<script>
 			document.getElementById('copyEmailImg').addEventListener('click', function () {
 				let email = "deanofwalls@gmail.com";
@@ -213,8 +225,21 @@
 				textarea.select();
 				document.execCommand('copy');
 				document.body.removeChild(textarea);
-				// alert('Email address copied!');
+
+				// Show the notification bubble
+				let notificationBubble = document.getElementById('notificationBubble');
+				notificationBubble.style.display = 'block';
+				notificationBubble.style.opacity = '1';
+
+				// Hide the notification bubble after 3 seconds
+				setTimeout(function () {
+					notificationBubble.style.opacity = '0';
+					setTimeout(function () {
+						notificationBubble.style.display = 'none';
+					}, 500); // hide after the opacity transition is done
+				}, 3000);
 			});
+
 		</script>
 
 </body>
