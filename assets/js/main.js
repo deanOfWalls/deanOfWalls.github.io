@@ -1,159 +1,127 @@
-/*
-	Read Only by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+// Main JavaScript for portfolio site - Vanilla JS only
 
-(function($) {
+// Set current year in footer
+document.addEventListener('DOMContentLoaded', function() {
+    const yearElement = document.getElementById('current-year');
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+    }
 
-	var $window = $(window),
-		$body = $('body'),
-		$header = $('#header'),
-		$titleBar = null,
-		$nav = $('#nav'),
-		$wrapper = $('#wrapper');
+    // Smooth scrolling for anchor links
+    const navLinks = document.querySelectorAll('a[href^="#"]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href !== '#' && href.length > 1) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Update active nav link
+                    updateActiveNavLink(targetId);
+                }
+            }
+        });
+    });
 
-	// Breakpoints.
-		breakpoints({
-			xlarge:   [ '1281px',  '1680px' ],
-			large:    [ '1025px',  '1280px' ],
-			medium:   [ '737px',   '1024px' ],
-			small:    [ '481px',   '736px'  ],
-			xsmall:   [ null,      '480px'  ],
-		});
+    // Copy email functionality
+    const copyEmailBtn = document.getElementById('copy-email-btn');
+    if (copyEmailBtn) {
+        copyEmailBtn.addEventListener('click', function() {
+            const email = 'deanofwalls@gmail.com';
+            copyToClipboard(email);
+            
+            // Visual feedback
+            const originalText = this.textContent;
+            this.textContent = 'Copied!';
+            
+            setTimeout(() => {
+                this.textContent = originalText;
+            }, 2000);
+        });
+    }
 
-	// Play initial animations on page load.
-		$window.on('load', function() {
-			window.setTimeout(function() {
-				$body.removeClass('is-preload');
-			}, 100);
-		});
+    // Update active nav link on scroll
+    window.addEventListener('scroll', updateActiveNavOnScroll);
+    
+    // Sticky header behavior
+    handleStickyHeader();
+});
 
-	// Tweaks/fixes.
+// Copy to clipboard helper
+function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(err => {
+            console.error('Failed to copy:', err);
+            fallbackCopyToClipboard(text);
+        });
+    } else {
+        fallbackCopyToClipboard(text);
+    }
+}
 
-		// Polyfill: Object fit.
-			if (!browser.canUse('object-fit')) {
+// Fallback copy method for older browsers
+function fallbackCopyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+    } catch (err) {
+        console.error('Fallback copy failed:', err);
+    }
+    document.body.removeChild(textarea);
+}
 
-				$('.image[data-position]').each(function() {
+// Update active navigation link
+function updateActiveNavLink(activeId) {
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${activeId}`) {
+            link.classList.add('active');
+        }
+    });
+}
 
-					var $this = $(this),
-						$img = $this.children('img');
+// Update active nav on scroll
+function updateActiveNavOnScroll() {
+    const sections = document.querySelectorAll('.content-section');
+    const scrollPos = window.scrollY + 100; // Offset for header
 
-					// Apply img as background.
-						$this
-							.css('background-image', 'url("' + $img.attr('src') + '")')
-							.css('background-position', $this.data('position'))
-							.css('background-size', 'cover')
-							.css('background-repeat', 'no-repeat');
+    sections.forEach(section => {
+        const top = section.offsetTop;
+        const bottom = top + section.offsetHeight;
+        const id = section.getAttribute('id');
 
-					// Hide img.
-						$img
-							.css('opacity', '0');
+        if (scrollPos >= top && scrollPos < bottom) {
+            updateActiveNavLink(id);
+        }
+    });
+}
 
-				});
+// Handle sticky header
+function handleStickyHeader() {
+    const header = document.getElementById('site-header');
+    if (!header) return;
 
-			}
-
-	// Header Panel.
-
-		// Nav.
-			var $nav_a = $nav.find('a');
-
-			$nav_a
-				.addClass('scrolly')
-				.on('click', function() {
-
-					var $this = $(this);
-
-					// External link? Bail.
-						if ($this.attr('href').charAt(0) != '#')
-							return;
-
-					// Deactivate all links.
-						$nav_a.removeClass('active');
-
-					// Activate link *and* lock it (so Scrollex doesn't try to activate other links as we're scrolling to this one's section).
-						$this
-							.addClass('active')
-							.addClass('active-locked');
-
-				})
-				.each(function() {
-
-					var	$this = $(this),
-						id = $this.attr('href'),
-						$section = $(id);
-
-					// No section for this link? Bail.
-						if ($section.length < 1)
-							return;
-
-					// Scrollex.
-						$section.scrollex({
-							mode: 'middle',
-							top: '5vh',
-							bottom: '5vh',
-							initialize: function() {
-
-								// Deactivate section.
-									$section.addClass('inactive');
-
-							},
-							enter: function() {
-
-								// Activate section.
-									$section.removeClass('inactive');
-
-								// No locked links? Deactivate all links and activate this section's one.
-									if ($nav_a.filter('.active-locked').length == 0) {
-
-										$nav_a.removeClass('active');
-										$this.addClass('active');
-
-									}
-
-								// Otherwise, if this section's link is the one that's locked, unlock it.
-									else if ($this.hasClass('active-locked'))
-										$this.removeClass('active-locked');
-
-							}
-						});
-
-				});
-
-		// Title Bar.
-			$titleBar = $(
-				'<div id="titleBar">' +
-					'<a href="#header" class="toggle"></a>' +
-					'<span class="title">' + $('#logo').html() + '</span>' +
-				'</div>'
-			)
-				.appendTo($body);
-
-		// Panel.
-			$header
-				.panel({
-					delay: 500,
-					hideOnClick: true,
-					hideOnSwipe: true,
-					resetScroll: true,
-					resetForms: true,
-					side: 'right',
-					target: $body,
-					visibleClass: 'header-visible'
-				});
-
-	// Scrolly.
-		$('.scrolly').scrolly({
-			speed: 1000,
-			offset: function() {
-
-				if (breakpoints.active('<=medium'))
-					return $titleBar.height();
-
-				return 0;
-
-			}
-		});
-
-})(jQuery);
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        
+        lastScroll = currentScroll;
+    });
+}

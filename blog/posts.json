@@ -1,0 +1,11 @@
+[
+  {
+    "id": "paper-password-backup",
+    "title": "Paper Password Backup (Explained Clearly)",
+    "date": "2024-01-15",
+    "description": "A decorative backup for a Diceware-style password encoded in a framed QR code-style artwork. Even with all visible words, the search space remains between ten million and one hundred trillion possible combinations.",
+    "content": "This framed piece is a decorative backup for a Diceware-style password. The image shown here has extra noise added so it can't be used directly.\n\nThe real version encodes two lists of Diceware words. I use a specific number that only matters to me to decide which words and in what order form my actual password.\n\nEven if someone knew this print was password-related and had every visible word, cracking it still isn't simple. They would have to guess:\n\n- which subset of the words I actually used\n- the real password length\n- the correct order\n- capitalization rules\n- spacing/symbol rules\n- and what service the password is for\n\nBecause of all that uncertainty, the search space isn't just \"all combinations of 20 words.\" It realistically lands somewhere between ten million and one hundred trillion possible word-and-format combinations — before even considering extra tweaks I might apply.\n\nSo the piece works as a memory aid for me but provides no direct, usable password to anyone else.",
+    "image": "images/qr-project.png",
+    "tags": ["security", "password", "art", "diceware"]
+  }
+]
