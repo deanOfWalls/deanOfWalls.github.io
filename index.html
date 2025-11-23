@@ -26,14 +26,11 @@
     <link rel="canonical" href="https://deanwalls.com/">
     <link rel="stylesheet" href="assets/css/main.css">
     
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L4B2QHHP08"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-L4B2QHHP08');
-    </script>
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; script-src-elem 'self' https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:;">
+    
+    <!-- Google Analytics - loaded via external script for CSP compliance -->
+    <script src="assets/js/analytics.js"></script>
     
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">

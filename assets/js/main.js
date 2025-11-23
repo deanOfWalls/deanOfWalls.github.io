@@ -263,9 +263,14 @@ function createBlogPostElement(post) {
     });
     
     // Check if there's additional content beyond the description
-    const hasMoreContent = post.content && 
-                          post.content.trim() && 
-                          post.content.trim() !== post.description.trim();
+    // Normalize both by removing extra whitespace and comparing
+    const normalizedContent = post.content ? post.content.replace(/\s+/g, ' ').trim() : '';
+    const normalizedDescription = post.description ? post.description.replace(/\s+/g, ' ').trim() : '';
+    
+    // Only show "Read More" if content exists, is different, and is substantially longer
+    const hasMoreContent = normalizedContent && 
+                          normalizedContent !== normalizedDescription &&
+                          normalizedContent.length > normalizedDescription.length + 50; // At least 50 chars more
     
     let html = '';
     if (post.image) {
@@ -279,10 +284,18 @@ function createBlogPostElement(post) {
     
     // Only show "Read More" if there's additional content
     if (hasMoreContent) {
-        html += `<button class="blog-read-more" onclick="toggleBlogPost('${post.id}')">Read More</button>`;
+        html += `<button class="blog-read-more" data-post-id="${post.id}">Read More</button>`;
     }
     
     article.innerHTML = html;
+    
+    // Attach event listener to button if it exists
+    const readMoreBtn = article.querySelector('.blog-read-more');
+    if (readMoreBtn) {
+        readMoreBtn.addEventListener('click', () => {
+            window.toggleBlogPost(post.id);
+        });
+    }
     
     // Make image clickable
     const img = article.querySelector('.blog-image');
