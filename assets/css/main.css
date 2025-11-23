@@ -76,7 +76,7 @@ body {
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    padding: 0.25rem;
+    padding: 1.5rem;
     margin: 0;
     max-width: 100vw;
     position: relative;
@@ -87,10 +87,10 @@ body {
 
 /* Terminal Window */
 .terminal {
-    width: calc(100% - 0.5rem);
+    width: 100%;
     max-width: 100%;
-    height: calc(100vh - 0.5rem);
-    margin: 0.25rem auto;
+    height: calc(100vh - 3rem);
+    margin: 0 auto;
     background: var(--terminal-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
