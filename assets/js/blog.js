@@ -1,8 +1,13 @@
 // Blog functionality - loads and displays blog entries from JSON
+// This file now primarily provides helper functions for the interactive terminal
 
 let allPosts = [];
 let expandedPostId = null;
 
+// Make allPosts globally accessible
+window.allPosts = allPosts;
+
+// Load blog posts on page load for use in main.js
 document.addEventListener('DOMContentLoaded', function() {
     loadBlogPosts();
 });
@@ -16,84 +21,17 @@ async function loadBlogPosts() {
         }
         
         allPosts = await response.json();
-        displayBlogPosts(allPosts);
+        window.allPosts = allPosts; // Update global reference
     } catch (error) {
         console.error('Error loading blog posts:', error);
     }
 }
 
-function displayBlogPosts(posts) {
-    const blogContainer = document.getElementById('blog-container');
-    if (!blogContainer) return;
-
-    if (posts.length === 0) {
-        blogContainer.innerHTML = '<p class="no-posts">No blog posts yet. Check back soon!</p>';
-        return;
-    }
-
-    // Sort posts by date (newest first)
-    const sortedPosts = posts.sort((a, b) => {
-        return new Date(b.date) - new Date(a.date);
-    });
-
-    blogContainer.innerHTML = sortedPosts.map(post => createBlogCard(post)).join('');
-    
-    // Make all images in blog posts clickable
-    const blogImages = blogContainer.querySelectorAll('.blog-image, .blog-post-content img');
-    blogImages.forEach(img => {
-        if (!img.onclick) {
-            img.style.cursor = 'pointer';
-            img.addEventListener('click', () => {
-                openImageModal(img.src, img.alt || 'Image');
-            });
-        }
-    });
-    
-    // Scroll to blog section when expanded
-    if (expandedPostId) {
-        setTimeout(() => {
-            const element = document.querySelector(`[data-post-id="${expandedPostId}"]`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
-    }
-}
-
-function createBlogCard(post) {
-    const date = new Date(post.date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-
-    const isExpanded = expandedPostId === post.id;
-    const showFullContent = isExpanded ? formatBlogContent(post.content) : '';
-
-    return `
-        <article class="blog-card" data-post-id="${post.id}">
-            ${post.image ? `<img src="${post.image}" alt="${post.title}" class="blog-image" loading="lazy" onclick="openImageModal('${post.image}', '${escapeHtml(post.title)}')">` : ''}
-            <h3 class="blog-title">${escapeHtml(post.title)}</h3>
-            <p class="blog-date">${date}</p>
-            <p class="blog-description">${escapeHtml(post.description)}</p>
-            ${!isExpanded ? `<button class="blog-read-more" onclick="toggleBlogPost('${post.id}')">Read More</button>` : ''}
-            ${isExpanded ? `
-                <div class="blog-post-content">
-                    ${showFullContent}
-                </div>
-                <button class="blog-read-more" onclick="toggleBlogPost('${post.id}')" style="margin-top: 1rem;">Show Less</button>
-            ` : ''}
-        </article>
-    `;
-}
-
-function toggleBlogPost(postId) {
-    if (expandedPostId === postId) {
-        expandedPostId = null;
-    } else {
-        expandedPostId = postId;
-    }
-    displayBlogPosts(allPosts);
+// Helper function to escape HTML (used by main.js)
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function formatBlogContent(content) {
@@ -120,12 +58,6 @@ function formatBlogContent(content) {
     }).join('');
     
     return formatted;
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 // Image modal functions
@@ -171,6 +103,7 @@ function closeImageModal() {
 }
 
 // Make functions globally accessible
-window.toggleBlogPost = toggleBlogPost;
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
+window.formatBlogContent = formatBlogContent;
+window.escapeHtml = escapeHtml;

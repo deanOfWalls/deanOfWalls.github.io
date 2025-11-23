@@ -10,71 +10,48 @@
 <body>
     <div class="terminal">
         <div class="terminal-header">
-            <span class="terminal-title">dean@portfolio:~</span>
+            <span class="terminal-title">Konsole</span>
         </div>
         <div class="terminal-body">
-            <div class="output">
-                <div class="line">
-                    <span class="prompt">dean@portfolio:~$</span>
-                    <span class="command">cat README.md</span>
+            <!-- Menu Section (Fixed at top) -->
+            <div class="menu-section" id="menu-section">
+                <div class="menu-prompt">
+                    <span class="prompt">[dean@archDesktop ~]$</span>
+                    <span class="command">./portfolio.sh</span>
                 </div>
-                <div class="response" id="about-section">
-                    <p class="intro">Full-stack developer building practical solutions.</p>
-                    <p>I build applications that solve real problems. Currently focused on Java backend development with experience across the full stack.</p>
-                    <p><a href="http://resume.deanwalls.com" target="_blank" rel="noopener noreferrer">→ resume.deanwalls.com</a></p>
-                </div>
-
-                <div class="line">
-                    <span class="prompt">dean@portfolio:~$</span>
-                    <span class="command">ls projects/</span>
-                </div>
-                <div class="response" id="projects-section">
-                    <div class="projects-grid">
-                        <a href="http://inplainsight.deanwalls.com" target="_blank" rel="noopener noreferrer" class="project-item">
-                            <span class="file-icon">📁</span>
-                            <span class="project-name">HideMy.pics</span>
-                            <span class="project-desc">Steganography web app</span>
-                        </a>
-                        <a href="http://crud_demo.deanwalls.com" target="_blank" rel="noopener noreferrer" class="project-item">
-                            <span class="file-icon">📁</span>
-                            <span class="project-name">CRUD Demo</span>
-                            <span class="project-desc">Full-stack CRUD app</span>
-                        </a>
-                        <a href="https://github.com/deanOfWalls/noBS_LinkedIn_Job_Filter" target="_blank" rel="noopener noreferrer" class="project-item">
-                            <span class="file-icon">📁</span>
-                            <span class="project-name">noBS Filter</span>
-                            <span class="project-desc">Chrome extension</span>
-                        </a>
-                        <a href="https://github.com/deanOfWalls/bachelor.strength" target="_blank" rel="noopener noreferrer" class="project-item">
-                            <span class="file-icon">📁</span>
-                            <span class="project-name">Bachelor Strength</span>
-                            <span class="project-desc">Fitness calculator</span>
-                        </a>
+                <div class="menu-options">
+                    <div class="menu-list">
+                        <button class="menu-item" data-command="cat README.md" data-target="about">
+                            <span class="menu-number">1)</span>
+                            <span class="menu-label">About</span>
+                        </button>
+                        <button class="menu-item" data-command="ls -lh projects/" data-target="projects">
+                            <span class="menu-number">2)</span>
+                            <span class="menu-label">Projects</span>
+                        </button>
+                        <button class="menu-item" data-command="cat blog/latest.md" data-target="blog">
+                            <span class="menu-number">3)</span>
+                            <span class="menu-label">Blog</span>
+                        </button>
+                        <button class="menu-item" data-command="cat contact.txt" data-target="contact">
+                            <span class="menu-number">4)</span>
+                            <span class="menu-label">Contact</span>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <div class="line">
-                    <span class="prompt">dean@portfolio:~$</span>
-                    <span class="command">cat blog/latest.md</span>
+            <!-- Output Section (Scrollable) -->
+            <div class="output-section" id="output-section">
+                <div class="output" id="output">
+                    <!-- Commands and responses will be added here dynamically -->
                 </div>
-                <div class="response" id="blog-section">
-                    <div id="blog-container">
-                        <!-- Blog entries loaded from JSON -->
-                    </div>
-                </div>
-
-                <div class="line">
-                    <span class="prompt">dean@portfolio:~$</span>
-                    <span class="command">cat contact.txt</span>
-                </div>
-                <div class="response" id="contact-section">
-                    <p><a href="mailto:deanofwalls@gmail.com">deanofwalls@gmail.com</a> <button id="copy-email-btn" class="copy-btn">[copy]</button></p>
-                    <p><a href="https://github.com/deanOfWalls" target="_blank" rel="noopener noreferrer">→ github.com/deanOfWalls</a></p>
-                    <p><a href="https://www.linkedin.com/in/deanofwalls/" target="_blank" rel="noopener noreferrer">→ linkedin.com/in/deanofwalls</a></p>
-                </div>
-
-                <div class="line active">
-                    <span class="prompt">dean@portfolio:~$</span> <span class="cursor">█</span>
+            </div>
+            
+            <!-- Active Prompt (Fixed at bottom) -->
+            <div class="prompt-section" id="prompt-section">
+                <div class="line active" id="active-prompt">
+                    <span class="prompt">[dean@archDesktop ~]$</span> <span class="cursor">█</span>
                 </div>
             </div>
         </div>
