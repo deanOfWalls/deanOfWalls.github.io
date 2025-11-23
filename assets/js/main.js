@@ -262,6 +262,11 @@ function createBlogPostElement(post) {
         day: 'numeric'
     });
     
+    // Check if there's additional content beyond the description
+    const hasMoreContent = post.content && 
+                          post.content.trim() && 
+                          post.content.trim() !== post.description.trim();
+    
     let html = '';
     if (post.image) {
         html += `<img src="${post.image}" alt="${escapeHtml(post.title)}" class="blog-image" loading="lazy">`;
@@ -270,8 +275,12 @@ function createBlogPostElement(post) {
         <h3 class="blog-title">${escapeHtml(post.title)}</h3>
         <p class="blog-date">${date}</p>
         <p class="blog-description">${escapeHtml(post.description)}</p>
-        <button class="blog-read-more" onclick="toggleBlogPost('${post.id}')">Read More</button>
     `;
+    
+    // Only show "Read More" if there's additional content
+    if (hasMoreContent) {
+        html += `<button class="blog-read-more" onclick="toggleBlogPost('${post.id}')">Read More</button>`;
+    }
     
     article.innerHTML = html;
     
