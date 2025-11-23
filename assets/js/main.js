@@ -166,6 +166,20 @@ async function displayContent(container, content, target) {
         return;
     }
     
+    // Add avatar image for about section
+    if (target === 'about') {
+        await sleep(100);
+        const avatarContainer = document.createElement('div');
+        avatarContainer.className = 'avatar-container';
+        const avatarImg = document.createElement('img');
+        avatarImg.src = 'images/avatar.png';
+        avatarImg.alt = 'Dean Walls';
+        avatarImg.className = 'avatar-image';
+        avatarContainer.appendChild(avatarImg);
+        container.appendChild(avatarContainer);
+        await sleep(100);
+    }
+    
     // Handle regular content
     let projectIndex = 0;
     for (let i = 0; i < content.lines.length; i++) {
