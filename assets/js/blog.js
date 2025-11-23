@@ -69,9 +69,9 @@ function openImageModal(imageSrc, imageAlt) {
     modal.setAttribute('aria-modal', 'true');
     
     modal.innerHTML = `
-        <div class="image-modal-backdrop" onclick="closeImageModal()"></div>
+        <div class="image-modal-backdrop"></div>
         <div class="image-modal-content">
-            <button class="image-modal-close" onclick="closeImageModal()" aria-label="Close">×</button>
+            <button class="image-modal-close" aria-label="Close">×</button>
             <img src="${imageSrc}" alt="${imageAlt}" class="image-modal-img">
             <p class="image-modal-caption">${imageAlt}</p>
         </div>
@@ -80,23 +80,36 @@ function openImageModal(imageSrc, imageAlt) {
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
     
+    // Close on backdrop click
+    const backdrop = modal.querySelector('.image-modal-backdrop');
+    backdrop.addEventListener('click', closeImageModal);
+    
+    // Close on close button click
+    const closeBtn = modal.querySelector('.image-modal-close');
+    closeBtn.addEventListener('click', closeImageModal);
+    
     // Close on escape key
     const handleEscape = (e) => {
         if (e.key === 'Escape') {
             closeImageModal();
         }
     };
-    modal.addEventListener('keydown', handleEscape);
+    document.addEventListener('keydown', handleEscape);
+    modal._escapeHandler = handleEscape;
     
     // Focus the close button
     setTimeout(() => {
-        modal.querySelector('.image-modal-close').focus();
+        closeBtn.focus();
     }, 100);
 }
 
 function closeImageModal() {
     const modal = document.querySelector('.image-modal');
     if (modal) {
+        // Remove escape key handler
+        if (modal._escapeHandler) {
+            document.removeEventListener('keydown', modal._escapeHandler);
+        }
         document.body.style.overflow = '';
         modal.remove();
     }

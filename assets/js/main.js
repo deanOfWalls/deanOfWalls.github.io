@@ -339,12 +339,20 @@ function fallbackCopyToClipboard(text) {
 }
 
 // Make blog functions globally accessible
-window.toggleBlogPost = function(postId) {
+window.toggleBlogPost = async function(postId) {
     const article = document.querySelector(`[data-post-id="${postId}"]`);
-    if (!article) return;
+    if (!article) {
+        console.error('Article not found for postId:', postId);
+        return;
+    }
     
     const contentDiv = article.querySelector('.blog-post-content');
     const readMoreBtn = article.querySelector('.blog-read-more');
+    
+    if (!readMoreBtn) {
+        console.error('Read More button not found');
+        return;
+    }
     
     if (contentDiv) {
         // Already expanded, collapse it
@@ -356,33 +364,50 @@ window.toggleBlogPost = function(postId) {
         if (window.allPosts && window.allPosts.length > 0) {
             posts = window.allPosts;
         } else {
-            // Try to get from blog.js module scope (if accessible)
-            console.warn('Blog posts not loaded yet');
-            return;
+            // Try fetching if not loaded yet
+            try {
+                const response = await fetch('blog/posts.json');
+                if (!response.ok) {
+                    console.error('Failed to fetch blog posts');
+                    return;
+                }
+                posts = await response.json();
+                window.allPosts = posts;
+            } catch (err) {
+                console.error('Failed to load blog posts:', err);
+                return;
+            }
         }
         
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        
-        const content = document.createElement('div');
-        content.className = 'blog-post-content';
-        content.innerHTML = formatBlogContent(post.content);
-        
-        readMoreBtn.textContent = 'Show Less';
-        readMoreBtn.after(content);
-        
-        // Make images in content clickable
-        const images = content.querySelectorAll('img');
-        images.forEach(img => {
-            img.style.cursor = 'pointer';
-            img.addEventListener('click', () => {
-                if (window.openImageModal) {
-                    window.openImageModal(img.src, img.alt || 'Image');
-                }
-            });
-        });
+        expandBlogPost(postId, posts, article, readMoreBtn);
     }
 };
+
+function expandBlogPost(postId, posts, article, readMoreBtn) {
+    const post = posts.find(p => p.id === postId);
+    if (!post) {
+        console.error('Post not found:', postId);
+        return;
+    }
+    
+    const content = document.createElement('div');
+    content.className = 'blog-post-content';
+    content.innerHTML = formatBlogContent(post.content);
+    
+    readMoreBtn.textContent = 'Show Less';
+    readMoreBtn.after(content);
+    
+    // Make images in content clickable
+    const images = content.querySelectorAll('img');
+    images.forEach(img => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => {
+            if (window.openImageModal) {
+                window.openImageModal(img.src, img.alt || 'Image');
+            }
+        });
+    });
+}
 
 // allPosts will be loaded by blog.js
 // We'll access it from window or wait for it to be available
