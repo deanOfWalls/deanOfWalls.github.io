@@ -301,6 +301,11 @@ body {
     position: relative;
     z-index: 2;
     min-height: 100%;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: default;
 }
 
 .line {
