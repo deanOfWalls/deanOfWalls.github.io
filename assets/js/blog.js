@@ -35,8 +35,25 @@ function escapeHtml(text) {
 }
 
 function formatBlogContent(content) {
-    // Convert line breaks to <br> and format bullet points
-    let formatted = escapeHtml(content);
+    // First, extract HTML tags (like video) to preserve them
+    const htmlTagRegex = /<[^>]+>/g;
+    const htmlTags = [];
+    let tagIndex = 0;
+    let processed = content.replace(htmlTagRegex, (match) => {
+        htmlTags.push(match);
+        return `__HTML_TAG_${tagIndex++}__`;
+    });
+    
+    // Now escape the rest
+    let formatted = escapeHtml(processed);
+    
+    // Restore HTML tags
+    htmlTags.forEach((tag, index) => {
+        formatted = formatted.replace(`__HTML_TAG_${index}__`, tag);
+    });
+    
+    // Convert markdown headers (## Header)
+    formatted = formatted.replace(/^## (.+)$/gm, '<h3>$1</h3>');
     
     // Convert lines starting with "- " to list items
     formatted = formatted.replace(/^- (.+)$/gm, '<li>$1</li>');
@@ -49,12 +66,15 @@ function formatBlogContent(content) {
     // Convert remaining line breaks to <br>
     formatted = formatted.replace(/\n/g, '<br>');
     
-    // Wrap paragraphs
+    // Wrap paragraphs (but preserve HTML tags and headers)
     formatted = formatted.split('<br><br>').map(para => {
-        if (para.trim() && !para.includes('<ul>')) {
-            return '<p>' + para.trim() + '</p>';
+        para = para.trim();
+        if (!para) return '';
+        // Don't wrap if it's already an HTML tag, header, or list
+        if (para.includes('<h3>') || para.includes('<ul>') || para.includes('<video>') || para.includes('</video>')) {
+            return para;
         }
-        return para;
+        return '<p>' + para + '</p>';
     }).join('');
     
     return formatted;
