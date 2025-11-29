@@ -276,49 +276,32 @@ function createBlogPostElement(post) {
         day: 'numeric'
     });
     
-    // Check if there's additional content beyond the description
-    // Normalize both by removing extra whitespace and comparing
-    const normalizedContent = post.content ? post.content.replace(/\s+/g, ' ').trim() : '';
-    const normalizedDescription = post.description ? post.description.replace(/\s+/g, ' ').trim() : '';
+    // Initially show only title and date (collapsed state)
+    const header = document.createElement('div');
+    header.className = 'blog-header';
+    header.style.cursor = 'pointer';
     
-    // Only show "Read More" if content exists, is different, and is substantially longer
-    const hasMoreContent = normalizedContent && 
-                          normalizedContent !== normalizedDescription &&
-                          normalizedContent.length > normalizedDescription.length + 50; // At least 50 chars more
+    const title = document.createElement('h3');
+    title.className = 'blog-title';
+    title.textContent = post.title;
     
-    let html = '';
-    if (post.image) {
-        html += `<img src="${post.image}" alt="${escapeHtml(post.title)}" class="blog-image" loading="lazy">`;
-    }
-    html += `
-        <h3 class="blog-title">${escapeHtml(post.title)}</h3>
-        <p class="blog-date">${date}</p>
-        <p class="blog-description">${escapeHtml(post.description)}</p>
-    `;
+    const dateElement = document.createElement('p');
+    dateElement.className = 'blog-date';
+    dateElement.textContent = date;
     
-    // Only show "Read More" if there's additional content
-    if (hasMoreContent) {
-        html += `<button class="blog-read-more" data-post-id="${post.id}">Read More</button>`;
-    }
+    header.appendChild(title);
+    header.appendChild(dateElement);
     
-    article.innerHTML = html;
+    // Store post data for expansion
+    article._postData = post;
+    article._isExpanded = false;
     
-    // Attach event listener to button if it exists
-    const readMoreBtn = article.querySelector('.blog-read-more');
-    if (readMoreBtn) {
-        readMoreBtn.addEventListener('click', () => {
-            window.toggleBlogPost(post.id);
-        });
-    }
+    // Make header clickable to toggle
+    header.addEventListener('click', () => {
+        window.toggleBlogPost(post.id);
+    });
     
-    // Make image clickable
-    const img = article.querySelector('.blog-image');
-    if (img && window.openImageModal) {
-        img.style.cursor = 'pointer';
-        img.addEventListener('click', () => {
-            window.openImageModal(post.image, post.title);
-        });
-    }
+    article.appendChild(header);
     
     return article;
 }
@@ -382,25 +365,14 @@ window.toggleBlogPost = async function(postId) {
         return;
     }
     
-    const contentDiv = article.querySelector('.blog-post-content');
-    const readMoreBtn = article.querySelector('.blog-read-more');
-    
-    if (!readMoreBtn) {
-        console.error('Read More button not found');
-        return;
-    }
-    
-    if (contentDiv) {
-        // Already expanded, collapse it
-        contentDiv.remove();
-        readMoreBtn.textContent = 'Read More';
-    } else {
-        // Expand it - get posts from blog.js or fetch them
+    // Get post data from article or fetch it
+    let post = article._postData;
+    if (!post) {
+        // Try fetching if not stored
         let posts = [];
         if (window.allPosts && window.allPosts.length > 0) {
             posts = window.allPosts;
         } else {
-            // Try fetching if not loaded yet
             try {
                 const response = await fetch('blog/posts.json');
                 if (!response.ok) {
@@ -414,30 +386,63 @@ window.toggleBlogPost = async function(postId) {
                 return;
             }
         }
-        
-        expandBlogPost(postId, posts, article, readMoreBtn);
+        post = posts.find(p => p.id === postId);
+        if (!post) {
+            console.error('Post not found:', postId);
+            return;
+        }
+        article._postData = post;
+    }
+    
+    const contentDiv = article.querySelector('.blog-content');
+    
+    if (contentDiv) {
+        // Already expanded, collapse it
+        contentDiv.remove();
+        article._isExpanded = false;
+        article.classList.remove('blog-expanded');
+    } else {
+        // Expand it - show full content
+        expandBlogPost(post, article);
+        article.classList.add('blog-expanded');
     }
 };
 
-function expandBlogPost(postId, posts, article, readMoreBtn) {
-    const post = posts.find(p => p.id === postId);
-    if (!post) {
-        console.error('Post not found:', postId);
-        return;
+function expandBlogPost(post, article) {
+    const content = document.createElement('div');
+    content.className = 'blog-content';
+    
+    let html = '';
+    
+    // Add image if available
+    if (post.image) {
+        html += `<img src="${post.image}" alt="${escapeHtml(post.title)}" class="blog-image" loading="lazy">`;
     }
     
-    const content = document.createElement('div');
-    content.className = 'blog-post-content';
-    content.innerHTML = formatBlogContent(post.content);
+    // Add description if available
+    if (post.description) {
+        html += `<p class="blog-description">${escapeHtml(post.description)}</p>`;
+    }
     
-    readMoreBtn.textContent = 'Show Less';
-    readMoreBtn.after(content);
+    // Add full content
+    if (post.content) {
+        html += `<div class="blog-post-content">${formatBlogContent(post.content)}</div>`;
+    }
     
-    // Make images in content clickable
-    const images = content.querySelectorAll('img');
+    content.innerHTML = html;
+    
+    // Insert after header
+    const header = article.querySelector('.blog-header');
+    header.after(content);
+    
+    article._isExpanded = true;
+    
+    // Make images clickable
+    const images = content.querySelectorAll('.blog-image');
     images.forEach(img => {
         img.style.cursor = 'pointer';
-        img.addEventListener('click', () => {
+        img.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent toggling when clicking image
             if (window.openImageModal) {
                 window.openImageModal(img.src, img.alt || 'Image');
             }
