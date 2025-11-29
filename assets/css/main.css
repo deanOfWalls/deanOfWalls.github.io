@@ -623,18 +623,6 @@ body {
     display: block;
 }
 
-.blog-post-content ul {
-    margin: 1.25rem 0 1.25rem 2rem;
-    list-style-type: disc;
-    color: var(--text-dim);
-    font-family: var(--font-mono);
-}
-
-.blog-post-content li {
-    margin-bottom: 0.75rem;
-    line-height: 1.7;
-    font-family: var(--font-mono);
-}
 
 .no-posts {
     color: var(--text-dim);

@@ -459,13 +459,11 @@ function formatBlogContent(content) {
         return window.formatBlogContent(content);
     }
     let formatted = escapeHtml(content);
-    formatted = formatted.replace(/^- (.+)$/gm, '<li>$1</li>');
-    formatted = formatted.replace(/(<li>.*<\/li>\n?)+/g, (match) => {
-        return '<ul>' + match + '</ul>';
-    });
+    // Convert lines starting with "- " to hyphen-prefixed lines (terminal style)
+    formatted = formatted.replace(/^- (.+)$/gm, '- $1');
     formatted = formatted.replace(/\n/g, '<br>');
     formatted = formatted.split('<br><br>').map(para => {
-        if (para.trim() && !para.includes('<ul>')) {
+        if (para.trim()) {
             return '<p>' + para.trim() + '</p>';
         }
         return para;

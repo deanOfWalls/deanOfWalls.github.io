@@ -55,13 +55,8 @@ function formatBlogContent(content) {
     // Convert markdown headers (## Header)
     formatted = formatted.replace(/^## (.+)$/gm, '<h3>$1</h3>');
     
-    // Convert lines starting with "- " to list items
-    formatted = formatted.replace(/^- (.+)$/gm, '<li>$1</li>');
-    
-    // Wrap consecutive list items in <ul>
-    formatted = formatted.replace(/(<li>.*<\/li>\n?)+/g, (match) => {
-        return '<ul>' + match + '</ul>';
-    });
+    // Convert lines starting with "- " to hyphen-prefixed lines (terminal style)
+    formatted = formatted.replace(/^- (.+)$/gm, '- $1');
     
     // Convert remaining line breaks to <br>
     formatted = formatted.replace(/\n/g, '<br>');
@@ -70,8 +65,8 @@ function formatBlogContent(content) {
     formatted = formatted.split('<br><br>').map(para => {
         para = para.trim();
         if (!para) return '';
-        // Don't wrap if it's already an HTML tag, header, or list
-        if (para.includes('<h3>') || para.includes('<ul>') || para.includes('<video>') || para.includes('</video>')) {
+        // Don't wrap if it's already an HTML tag or header
+        if (para.includes('<h3>') || para.includes('<video>') || para.includes('</video>')) {
             return para;
         }
         return '<p>' + para + '</p>';
