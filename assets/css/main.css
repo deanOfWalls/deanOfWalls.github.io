@@ -551,7 +551,8 @@ body {
 
 .blog-title {
     color: var(--text);
-    font-weight: 600;
+    font-weight: 400;
+    font-size: 1em;
     margin-bottom: 0.5rem;
     line-height: 1.4;
     font-family: var(--font-mono);
@@ -596,7 +597,7 @@ body {
 
 .blog-post-content h3 {
     color: var(--text);
-    font-weight: 600;
+    font-weight: 400;
     margin: 2rem 0 1rem 0;
     font-size: 1em;
     font-family: var(--font-mono);
