@@ -1,0 +1,10 @@
+# Deployment documentation (contains server details)
+DEPLOYMENT.md
+
+# Analysis documents
+DARK_VS_LIGHT_ANALYSIS.md
+
+# Test files
+test-*.js
+webhooktestfile
+
