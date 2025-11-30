@@ -153,15 +153,16 @@ async function getBlogContent() {
 
 async function displayContent(container, content, target) {
     if (content.type === 'blog') {
-        // Handle blog posts
+        // Handle blog posts - use same format as projects
         const sortedPosts = content.posts.sort((a, b) => {
             return new Date(b.date) - new Date(a.date);
         });
         
-        for (const post of sortedPosts) {
+        const blogList = createProjectsList(container);
+        for (let i = 0; i < sortedPosts.length; i++) {
             await sleep(150);
-            const postElement = createBlogPostElement(post);
-            container.appendChild(postElement);
+            const postElement = createBlogPostElement(sortedPosts[i], i);
+            blogList.appendChild(postElement);
         }
         return;
     }
@@ -265,45 +266,49 @@ function createProjectElement(project, index = 0) {
     return line;
 }
 
-function createBlogPostElement(post) {
-    const article = document.createElement('article');
-    article.className = 'blog-card';
-    article.setAttribute('data-post-id', post.id);
+function createBlogPostElement(post, index = 0) {
+    // Format date like ls -lh (e.g., "Nov 28 20:48")
+    const postDate = new Date(post.date);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[postDate.getMonth()];
+    const day = postDate.getDate();
+    const hours = String(postDate.getHours()).padStart(2, '0');
+    const minutes = String(postDate.getMinutes()).padStart(2, '0');
+    const dateStr = `${month} ${day} ${hours}:${minutes}`;
     
-    const date = new Date(post.date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    // Generate fake file size for ls format
+    const sizes = ['1.2K', '2.4K', '1.8K', '3.1K'];
+    const size = sizes[index % sizes.length];
+    const perms = '-rw-r--r--';
     
-    // Initially show only title and date (collapsed state)
-    const header = document.createElement('div');
-    header.className = 'blog-header';
-    header.style.cursor = 'pointer';
+    const line = document.createElement('div');
+    line.className = 'ls-line';
+    line.setAttribute('data-post-id', post.id);
     
-    const title = document.createElement('h3');
-    title.className = 'blog-title';
-    title.textContent = post.title;
+    const link = document.createElement('a');
+    link.href = '#';
+    link.className = 'ls-link';
+    link.style.cursor = 'pointer';
     
-    const dateElement = document.createElement('p');
-    dateElement.className = 'blog-date';
-    dateElement.textContent = date;
-    
-    header.appendChild(title);
-    header.appendChild(dateElement);
+    link.innerHTML = `
+        <span class="ls-perms">${perms}</span>
+        <span class="ls-size">${size}</span>
+        <span class="ls-date">${dateStr}</span>
+        <span class="ls-name">${escapeHtml(post.title)}</span>
+    `;
     
     // Store post data for expansion
-    article._postData = post;
-    article._isExpanded = false;
+    line._postData = post;
+    line._isExpanded = false;
     
-    // Make header clickable to toggle
-    header.addEventListener('click', () => {
+    // Make clickable to toggle
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
         window.toggleBlogPost(post.id);
     });
     
-    article.appendChild(header);
-    
-    return article;
+    line.appendChild(link);
+    return line;
 }
 
 async function typeText(element, text, speed = 50) {
@@ -359,14 +364,14 @@ function fallbackCopyToClipboard(text) {
 
 // Make blog functions globally accessible
 window.toggleBlogPost = async function(postId) {
-    const article = document.querySelector(`[data-post-id="${postId}"]`);
-    if (!article) {
-        console.error('Article not found for postId:', postId);
+    const line = document.querySelector(`[data-post-id="${postId}"]`);
+    if (!line) {
+        console.error('Blog post line not found for postId:', postId);
         return;
     }
     
-    // Get post data from article or fetch it
-    let post = article._postData;
+    // Get post data from line or fetch it
+    let post = line._postData;
     if (!post) {
         // Try fetching if not stored
         let posts = [];
@@ -391,24 +396,22 @@ window.toggleBlogPost = async function(postId) {
             console.error('Post not found:', postId);
             return;
         }
-        article._postData = post;
+        line._postData = post;
     }
     
-    const contentDiv = article.querySelector('.blog-content');
+    const contentDiv = line.querySelector('.blog-content');
     
     if (contentDiv) {
         // Already expanded, collapse it
         contentDiv.remove();
-        article._isExpanded = false;
-        article.classList.remove('blog-expanded');
+        line._isExpanded = false;
     } else {
         // Expand it - show full content
-        expandBlogPost(post, article);
-        article.classList.add('blog-expanded');
+        expandBlogPost(post, line);
     }
 };
 
-function expandBlogPost(post, article) {
+function expandBlogPost(post, line) {
     const content = document.createElement('div');
     content.className = 'blog-content';
     
@@ -431,11 +434,10 @@ function expandBlogPost(post, article) {
     
     content.innerHTML = html;
     
-    // Insert after header
-    const header = article.querySelector('.blog-header');
-    header.after(content);
+    // Insert after the line
+    line.after(content);
     
-    article._isExpanded = true;
+    line._isExpanded = true;
     
     // Make images clickable
     const images = content.querySelectorAll('.blog-image');
