@@ -452,7 +452,8 @@ body {
 
 .ls-link {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
     gap: 1rem;
     padding: 0.5rem 0;
     text-decoration: none;
@@ -488,7 +489,8 @@ body {
     color: var(--accent);
     font-weight: 500;
     min-width: 0;
-    flex: 1;
+    flex: 1 1 auto;
+    word-break: break-word;
     font-family: var(--font-mono);
     transition: color 0.2s ease;
 }
@@ -676,7 +678,6 @@ body {
     }
     
     .ls-link {
-        flex-wrap: wrap;
         gap: 0.5rem;
     }
     
@@ -684,15 +685,20 @@ body {
     .ls-size,
     .ls-date {
         min-width: auto;
+        flex-shrink: 0;
     }
     
     .ls-name {
         width: 100%;
+        flex-basis: 100%;
+        margin-top: 0.25rem;
     }
     
     .ls-desc {
         margin-left: 0;
         width: 100%;
+        flex-basis: 100%;
+        margin-top: 0.25rem;
     }
     
     .line {
