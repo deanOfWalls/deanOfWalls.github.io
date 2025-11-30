@@ -679,6 +679,7 @@ body {
     
     .ls-link {
         gap: 0.5rem;
+        flex-direction: row;
     }
     
     .ls-perms,
@@ -686,19 +687,22 @@ body {
     .ls-date {
         min-width: auto;
         flex-shrink: 0;
+        flex-grow: 0;
     }
     
     .ls-name {
         width: 100%;
-        flex-basis: 100%;
-        margin-top: 0.25rem;
+        flex: 0 0 100%;
+        margin-top: 0.5rem;
+        order: 10;
     }
     
     .ls-desc {
         margin-left: 0;
         width: 100%;
-        flex-basis: 100%;
+        flex: 0 0 100%;
         margin-top: 0.25rem;
+        order: 20;
     }
     
     .line {
