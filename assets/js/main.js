@@ -370,42 +370,44 @@ window.toggleBlogPost = async function(postId) {
         return;
     }
     
-    // Get post data from line or fetch it
-    let post = line._postData;
-    if (!post) {
-        // Try fetching if not stored
-        let posts = [];
-        if (window.allPosts && window.allPosts.length > 0) {
-            posts = window.allPosts;
-        } else {
-            try {
-                const response = await fetch('blog/posts.json');
-                if (!response.ok) {
-                    console.error('Failed to fetch blog posts');
-                    return;
-                }
-                posts = await response.json();
-                window.allPosts = posts;
-            } catch (err) {
-                console.error('Failed to load blog posts:', err);
-                return;
-            }
-        }
-        post = posts.find(p => p.id === postId);
-        if (!post) {
-            console.error('Post not found:', postId);
-            return;
-        }
-        line._postData = post;
-    }
-    
-    const contentDiv = line.querySelector('.blog-content');
+    // Check if already expanded by looking at next sibling
+    const nextSibling = line.nextElementSibling;
+    const contentDiv = nextSibling && nextSibling.classList.contains('blog-content') ? nextSibling : null;
     
     if (contentDiv) {
         // Already expanded, collapse it
         contentDiv.remove();
         line._isExpanded = false;
     } else {
+        // Get post data from line or fetch it
+        let post = line._postData;
+        if (!post) {
+            // Try fetching if not stored
+            let posts = [];
+            if (window.allPosts && window.allPosts.length > 0) {
+                posts = window.allPosts;
+            } else {
+                try {
+                    const response = await fetch('blog/posts.json');
+                    if (!response.ok) {
+                        console.error('Failed to fetch blog posts');
+                        return;
+                    }
+                    posts = await response.json();
+                    window.allPosts = posts;
+                } catch (err) {
+                    console.error('Failed to load blog posts:', err);
+                    return;
+                }
+            }
+            post = posts.find(p => p.id === postId);
+            if (!post) {
+                console.error('Post not found:', postId);
+                return;
+            }
+            line._postData = post;
+        }
+        
         // Expand it - show full content
         expandBlogPost(post, line);
     }
