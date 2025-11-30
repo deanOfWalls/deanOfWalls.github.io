@@ -163,6 +163,26 @@ async function displayContent(container, content, target) {
             await sleep(150);
             const postElement = createBlogPostElement(sortedPosts[i], i);
             blogList.appendChild(postElement);
+            // Check if name is wrapping and adjust
+            setTimeout(() => checkAndFixWrapping(postElement), 100);
+        }
+        return;
+    }
+    
+    // Handle projects - check for wrapping
+    if (target === 'projects') {
+        let projectIndex = 0;
+        for (let i = 0; i < content.lines.length; i++) {
+            const line = content.lines[i];
+            if (line.type === 'project') {
+                const projectList = container.querySelector('.projects-list') || createProjectsList(container);
+                await sleep(100);
+                const projectElement = createProjectElement(line, projectIndex);
+                projectList.appendChild(projectElement);
+                // Check if name is wrapping and adjust
+                setTimeout(() => checkAndFixWrapping(projectElement), 100);
+                projectIndex++;
+            }
         }
         return;
     }
@@ -204,11 +224,8 @@ async function displayContent(container, content, target) {
             p.appendChild(a);
             container.appendChild(p);
         } else if (line.type === 'project') {
-            const projectList = container.querySelector('.projects-list') || createProjectsList(container);
-            await sleep(100);
-            const projectItem = createProjectElement(line, projectIndex);
-            projectList.appendChild(projectItem);
-            projectIndex++;
+            // Projects are already handled above, skip here
+            continue;
         } else if (line.email) {
             const p = document.createElement('p');
             const emailLink = document.createElement('a');
@@ -233,6 +250,64 @@ function createProjectsList(container) {
     container.appendChild(list);
     return list;
 }
+
+function checkAndFixWrapping(lineElement) {
+    const link = lineElement.querySelector('.ls-link');
+    if (!link) return;
+    
+    const nameElement = link.querySelector('.ls-name');
+    if (!nameElement) return;
+    
+    // Reset any previous wrapping styles
+    nameElement.style.flexBasis = '';
+    nameElement.style.width = '';
+    nameElement.style.marginTop = '';
+    nameElement.style.order = '';
+    
+    // Check if the name text is wrapping by comparing its natural width with available space
+    const nameText = nameElement.textContent;
+    const tempSpan = document.createElement('span');
+    tempSpan.textContent = nameText;
+    tempSpan.style.visibility = 'hidden';
+    tempSpan.style.position = 'absolute';
+    tempSpan.style.whiteSpace = 'nowrap';
+    tempSpan.style.font = window.getComputedStyle(nameElement).font;
+    tempSpan.style.padding = '0';
+    tempSpan.style.margin = '0';
+    document.body.appendChild(tempSpan);
+    const nameTextWidth = tempSpan.offsetWidth;
+    document.body.removeChild(tempSpan);
+    
+    // Calculate available width for name (link width minus perms/size/date/gaps)
+    const linkRect = link.getBoundingClientRect();
+    const perms = link.querySelector('.ls-perms');
+    const size = link.querySelector('.ls-size');
+    const date = link.querySelector('.ls-date');
+    const permsWidth = perms ? perms.getBoundingClientRect().width : 0;
+    const sizeWidth = size ? size.getBoundingClientRect().width : 0;
+    const dateWidth = date ? date.getBoundingClientRect().width : 0;
+    const gap = parseFloat(window.getComputedStyle(link).gap) || 16;
+    const availableWidth = linkRect.width - permsWidth - sizeWidth - dateWidth - (gap * 3);
+    
+    // If name text is wider than available space, it will wrap - force it to new line
+    if (nameTextWidth > availableWidth && availableWidth > 0) {
+        nameElement.style.flexBasis = '100%';
+        nameElement.style.width = '100%';
+        nameElement.style.marginTop = '0.5rem';
+        nameElement.style.order = '10';
+    }
+}
+
+// Re-check wrapping on window resize
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        document.querySelectorAll('.ls-line').forEach(line => {
+            checkAndFixWrapping(line);
+        });
+    }, 100);
+});
 
 function createProjectElement(project, index = 0) {
     // Generate fake file size and date for ls -lh format
