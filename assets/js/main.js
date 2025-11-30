@@ -12,7 +12,7 @@ const contentData = {
     },
     projects: {
         lines: [
-            { type: 'project', name: 'HideMy.pics', desc: 'Steganography web app', href: 'http://inplainsight.deanwalls.com' },
+            { type: 'project', name: 'HideMy.pics', desc: 'Steganography web app', href: 'https://hidemy.pics' },
             { type: 'project', name: 'CRUD Demo', desc: 'Full-stack CRUD app', href: 'http://crud_demo.deanwalls.com' },
             { type: 'project', name: 'noBS Filter', desc: 'Chrome extension', href: 'https://github.com/deanOfWalls/noBS_LinkedIn_Job_Filter' },
             { type: 'project', name: 'Bachelor Strength', desc: 'Fitness calculator', href: 'https://github.com/deanOfWalls/bachelor.strength' }
