@@ -209,6 +209,7 @@ async function displayContent(container, content, target) {
             if (line.email) {
                 a.href = '#';
                 a.style.cursor = 'pointer';
+                a.style.position = 'relative';
                 
                 // Add tooltip element
                 const tooltip = document.createElement('span');

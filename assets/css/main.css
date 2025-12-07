@@ -615,6 +615,10 @@ body {
 }
 
 /* Contact */
+.response a {
+    position: relative;
+}
+
 .email-link {
     color: var(--accent);
     text-decoration: none;
