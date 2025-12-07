@@ -33,20 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTerminal();
     setupMenuHandlers();
     
-    // Copy email functionality
-    document.addEventListener('click', function(e) {
-        if (e.target.id === 'copy-email-btn') {
-            const email = 'deanofwalls@gmail.com';
-            copyToClipboard(email);
-            
-            const originalText = e.target.textContent;
-            e.target.textContent = 'Copied!';
-            
-            setTimeout(() => {
-                e.target.textContent = originalText;
-            }, 2000);
-        }
-    });
+    // Email copy functionality is now handled inline in displayContent
 });
 
 function initializeTerminal() {
@@ -229,16 +216,33 @@ async function displayContent(container, content, target) {
         } else if (line.email) {
             const p = document.createElement('p');
             const emailLink = document.createElement('a');
-            emailLink.href = `mailto:${line.content}`;
+            emailLink.href = '#';
+            emailLink.className = 'email-link';
             emailLink.textContent = line.content;
+            emailLink.style.cursor = 'pointer';
+            
+            // Add tooltip element
+            const tooltip = document.createElement('span');
+            tooltip.className = 'email-tooltip';
+            tooltip.textContent = 'Copied!';
+            emailLink.appendChild(tooltip);
+            
+            // Copy to clipboard on click
+            emailLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const email = line.content;
+                copyToClipboard(email);
+                
+                // Show tooltip
+                tooltip.classList.add('show');
+                
+                // Hide tooltip after 2 seconds
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 2000);
+            });
+            
             p.appendChild(emailLink);
-            
-            const copyBtn = document.createElement('button');
-            copyBtn.id = 'copy-email-btn';
-            copyBtn.className = 'copy-btn';
-            copyBtn.textContent = '[copy]';
-            p.appendChild(copyBtn);
-            
             container.appendChild(p);
         }
     }
