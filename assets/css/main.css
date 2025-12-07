@@ -649,6 +649,8 @@ body {
     border: 1px solid var(--border-light);
     font-family: var(--font-mono);
     margin-bottom: 0.5rem;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .email-tooltip::after {

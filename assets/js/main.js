@@ -227,6 +227,8 @@ async function displayContent(container, content, target) {
                     
                     // Show tooltip
                     tooltip.classList.add('show');
+                    console.log('Tooltip shown, has show class:', tooltip.classList.contains('show'));
+                    console.log('Tooltip computed style:', window.getComputedStyle(tooltip).opacity);
                     
                     // Hide tooltip after 2 seconds
                     setTimeout(() => {
