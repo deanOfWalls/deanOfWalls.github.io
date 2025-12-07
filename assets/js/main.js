@@ -20,7 +20,7 @@ const contentData = {
     },
     contact: {
         lines: [
-            { type: 'text', content: 'deanofwalls@gmail.com', email: true },
+            { type: 'link', content: '→ deanofwalls@gmail.com', href: '#', email: true },
             { type: 'link', content: '→ github.com/deanOfWalls', href: 'https://github.com/deanOfWalls' },
             { type: 'link', content: '→ linkedin.com/in/deanofwalls', href: 'https://www.linkedin.com/in/deanofwalls/' }
         ]
