@@ -44,6 +44,10 @@ body {
     line-height: 1.7;
     color: var(--text);
     background: #0a0e14;
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
     background-image: 
         /* Desktop wallpaper pattern - geometric shapes */
         radial-gradient(circle at 25% 25%, rgba(63, 185, 80, 0.08) 0%, transparent 50%),
@@ -306,11 +310,10 @@ body {
     position: relative;
     z-index: 2;
     min-height: 100%;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    cursor: default;
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
 }
 
 .line {
