@@ -204,46 +204,46 @@ async function displayContent(container, content, target) {
         } else if (line.type === 'link') {
             const p = document.createElement('p');
             const a = document.createElement('a');
-            a.href = line.href;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
+            
+            // Handle email links differently
+            if (line.email) {
+                a.href = '#';
+                a.style.cursor = 'pointer';
+                
+                // Add tooltip element
+                const tooltip = document.createElement('span');
+                tooltip.className = 'email-tooltip';
+                tooltip.textContent = 'Copied to clipboard!';
+                a.appendChild(tooltip);
+                
+                // Extract email from content (remove the arrow)
+                const email = line.content.replace('→ ', '').trim();
+                
+                // Copy to clipboard on click
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    copyToClipboard(email);
+                    
+                    // Show tooltip
+                    tooltip.classList.add('show');
+                    
+                    // Hide tooltip after 2 seconds
+                    setTimeout(() => {
+                        tooltip.classList.remove('show');
+                    }, 2000);
+                });
+            } else {
+                a.href = line.href;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+            }
+            
             a.textContent = line.content;
             p.appendChild(a);
             container.appendChild(p);
         } else if (line.type === 'project') {
             // Projects are already handled above, skip here
             continue;
-        } else if (line.email) {
-            const p = document.createElement('p');
-            const emailLink = document.createElement('a');
-            emailLink.href = '#';
-            emailLink.className = 'email-link';
-            emailLink.textContent = line.content;
-            emailLink.style.cursor = 'pointer';
-            
-            // Add tooltip element
-            const tooltip = document.createElement('span');
-            tooltip.className = 'email-tooltip';
-            tooltip.textContent = 'Copied!';
-            emailLink.appendChild(tooltip);
-            
-            // Copy to clipboard on click
-            emailLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                const email = line.content;
-                copyToClipboard(email);
-                
-                // Show tooltip
-                tooltip.classList.add('show');
-                
-                // Hide tooltip after 2 seconds
-                setTimeout(() => {
-                    tooltip.classList.remove('show');
-                }, 2000);
-            });
-            
-            p.appendChild(emailLink);
-            container.appendChild(p);
         }
     }
 }
