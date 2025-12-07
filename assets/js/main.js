@@ -211,7 +211,10 @@ async function displayContent(container, content, target) {
                 a.style.cursor = 'pointer';
                 a.style.position = 'relative';
                 
-                // Add tooltip element
+                // Set text content first
+                a.textContent = line.content;
+                
+                // Add tooltip element AFTER setting text
                 const tooltip = document.createElement('span');
                 tooltip.className = 'email-tooltip';
                 tooltip.textContent = 'Copied to clipboard!';
@@ -239,9 +242,9 @@ async function displayContent(container, content, target) {
                 a.href = line.href;
                 a.target = '_blank';
                 a.rel = 'noopener noreferrer';
+                a.textContent = line.content;
             }
             
-            a.textContent = line.content;
             p.appendChild(a);
             container.appendChild(p);
         } else if (line.type === 'project') {
